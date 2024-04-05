@@ -35,10 +35,15 @@ public class Player {
 
     public void setCurrentPosition(int currentPosition) {
         this.currentPosition = currentPosition;
+        System.out.println(getPlayerName() + "'s new location is " + getCurrentPosition());
     }
 
     public void setNumberOfCoins(int numberOfCoins) {
         this.numberOfCoins = numberOfCoins;
+        System.out.println(getPlayerName()
+                + " now has "
+                + getNumberOfCoins()
+                + " Gold Coins.");
     }
 
     public void setInPenaltyBox(boolean inPenaltyBox) {
