@@ -3,31 +3,33 @@ package trivia;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-// REFACTOR ME
-public class GameBetter implements Game {
 
-   public final int BOARD_SIZE = 12;
-
+// TODO refactor me
+public class OriginalGame implements Game {
    ArrayList players = new ArrayList();
    int[] places = new int[6];
    int[] purses = new int[6];
    boolean[] inPenaltyBox = new boolean[6];
 
-   LinkedList<Question> popQuestions = new LinkedList<>();
-   LinkedList<Question> scienceQuestions = new LinkedList<>();
-   LinkedList<Question> sportsQuestions = new LinkedList<>();
-   LinkedList<Question> rockQuestions = new LinkedList<>();
+   LinkedList popQuestions = new LinkedList();
+   LinkedList scienceQuestions = new LinkedList();
+   LinkedList sportsQuestions = new LinkedList();
+   LinkedList rockQuestions = new LinkedList();
 
    int currentPlayer = 0;
    boolean isGettingOutOfPenaltyBox;
 
-   public GameBetter(int numberOfQuestionsPerType) {
-      for (int questionNumber = 0; questionNumber < numberOfQuestionsPerType; questionNumber++) {
-         popQuestions.addLast(new Question(QuestionType.POP, questionNumber));
-         scienceQuestions.addLast(new Question(QuestionType.SCIENCE, questionNumber));
-         sportsQuestions.addLast(new Question(QuestionType.SPORTS, questionNumber));
-         rockQuestions.addLast(new Question(QuestionType.ROCK, questionNumber));
+   public OriginalGame() {
+      for (int i = 0; i < 50; i++) {
+         popQuestions.addLast("Pop Question " + i);
+         scienceQuestions.addLast(("Science Question " + i));
+         sportsQuestions.addLast(("Sports Question " + i));
+         rockQuestions.addLast(createRockQuestion(i));
       }
+   }
+
+   public String createRockQuestion(int index) {
+      return "Rock Question " + index;
    }
 
    public boolean isPlayable() {
@@ -35,6 +37,8 @@ public class GameBetter implements Game {
    }
 
    public boolean add(String playerName) {
+
+
       players.add(playerName);
       places[howManyPlayers()] = 0;
       purses[howManyPlayers()] = 0;
@@ -61,7 +65,9 @@ public class GameBetter implements Game {
             places[currentPlayer] = places[currentPlayer] + roll;
             if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
 
-            System.out.println(players.get(currentPlayer) + "'s new location is " + places[currentPlayer]);
+            System.out.println(players.get(currentPlayer)
+                               + "'s new location is "
+                               + places[currentPlayer]);
             System.out.println("The category is " + currentCategory());
             askQuestion();
          } else {
@@ -74,7 +80,9 @@ public class GameBetter implements Game {
          places[currentPlayer] = places[currentPlayer] + roll;
          if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
 
-         System.out.println(players.get(currentPlayer) + "'s new location is " + places[currentPlayer]);
+         System.out.println(players.get(currentPlayer)
+                            + "'s new location is "
+                            + places[currentPlayer]);
          System.out.println("The category is " + currentCategory());
          askQuestion();
       }
@@ -83,13 +91,13 @@ public class GameBetter implements Game {
 
    private void askQuestion() {
       if (currentCategory() == "Pop")
-         System.out.println(popQuestions.removeFirst().generatePrefix());
+         System.out.println(popQuestions.removeFirst());
       if (currentCategory() == "Science")
-         System.out.println(scienceQuestions.removeFirst().generatePrefix());
+         System.out.println(scienceQuestions.removeFirst());
       if (currentCategory() == "Sports")
-         System.out.println(sportsQuestions.removeFirst().generatePrefix());
+         System.out.println(sportsQuestions.removeFirst());
       if (currentCategory() == "Rock")
-         System.out.println(rockQuestions.removeFirst().generatePrefix());
+         System.out.println(rockQuestions.removeFirst());
    }
 
 
