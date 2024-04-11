@@ -14,8 +14,6 @@ public class GameBetter implements Game {
    LinkedList<Question> sportsQuestions = new LinkedList<>();
    LinkedList<Question> rockQuestions = new LinkedList<>();
 
-   boolean isGettingOutOfPenaltyBox;
-
    public GameBetter(int numberOfQuestionsPerType) {
       for (int questionNumber = 0; questionNumber < numberOfQuestionsPerType; questionNumber++) {
          popQuestions.addLast(new Question(QuestionType.POP, questionNumber));
@@ -51,31 +49,27 @@ public class GameBetter implements Game {
 
       if (getCurrentPlayer().isInPenaltyBox()) {
          if (roll % 2 != 0) {
-            isGettingOutOfPenaltyBox = true;
-
+            getCurrentPlayer().setInPenaltyBox(false);
             System.out.println(getCurrentPlayer().getPlayerName() + " is getting out of the penalty box");
-            updatePlayerPosition( roll );
          } else {
             System.out.println(getCurrentPlayer().getPlayerName() + " is not getting out of the penalty box");
-            isGettingOutOfPenaltyBox = false;
          }
+      }
 
-      } else {
-         updatePlayerPosition( roll );
+      if (!getCurrentPlayer().isInPenaltyBox()) {
+         int targetPosition = (getCurrentPlayer().getCurrentPosition() + roll) % BOARD_SIZE;
+         getCurrentPlayer().setCurrentPosition(targetPosition);
+
+         QuestionType currentQuestionCategory = currentCategory(targetPosition);
+         System.out.println("The category is " + currentQuestionCategory);
+         askQuestion(currentQuestionCategory);
       }
 
    }
 
-   private void updatePlayerPosition( int roll ) {
-      int targetPosition = (getCurrentPlayer().getCurrentPosition() + roll) % BOARD_SIZE;
-      getCurrentPlayer().setCurrentPosition(targetPosition);
 
-      System.out.println("The category is " + currentCategory());
-      askQuestion();
-   }
-
-   private void askQuestion() {
-      switch(currentCategory()){
+   private void askQuestion(QuestionType questionType) {
+      switch(questionType){
          case POP:
             System.out.println(popQuestions.removeFirst().generatePrefix());
             break;
@@ -91,25 +85,18 @@ public class GameBetter implements Game {
       }
    }
 
-   private QuestionType currentCategory( ) {
-      int playerLocation = getCurrentPlayer().getCurrentPosition();
+   private QuestionType currentCategory(int playerPosition) {
       QuestionType[] types = QuestionType.values();
-      QuestionType category = types[playerLocation % types.length];
+      QuestionType category = types[playerPosition % types.length];
       return category;
    }
 
    public boolean wasCorrectlyAnswered() {
       if (getCurrentPlayer().isInPenaltyBox()) {
-         if (isGettingOutOfPenaltyBox) {
-            boolean isWinner = correctAnswer( getCurrentPlayer() );
-            return isWinner;
-         } else {
             updateNextPlayer();
             return true;
-         }
       } else {
-         boolean winner = correctAnswer( getCurrentPlayer() );
-         return winner;
+         return correctAnswer( getCurrentPlayer() );
       }
    }
 
