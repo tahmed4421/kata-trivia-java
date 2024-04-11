@@ -1,102 +1,49 @@
 package trivia;
 
-import java.util.LinkedList;
+import java.util.Optional;
 
-// REFACTOR ME
 public class GameBetter implements Game {
 
-   LinkedList<Player> players = new LinkedList<>();
-   GameBoard gameBoard;
+    GameBoard gameBoard;
 
-   public GameBetter(int numberOfQuestionsPerType) {
-      this.gameBoard = new GameBoard(12, numberOfQuestionsPerType);
+    public GameBetter(int numberOfQuestionsPerType) {
+        this.gameBoard = new GameBoard(12, numberOfQuestionsPerType);
+    }
 
-   }
+    public boolean isPlayable() {
+        return (gameBoard.getPlayerSize() >= 2);
+    }
 
-   public boolean isPlayable() {
-      return (howManyPlayers() >= 2);
-   }
+    public boolean add(String playerName) {
+        gameBoard.addPlayer(playerName);
+        return true;
+    }
 
-   public boolean add(String playerName) {
-      players.add(new Player(playerName));
-
-      System.out.println(playerName + " was added");
-      System.out.println("They are player number " + players.size());
-      return true;
-   }
-
-   public int howManyPlayers() {
-      return players.size();
-   }
-
-   public Player getCurrentPlayer(){
-      return players.getFirst();
-   }
-
-   public void roll(int roll) {
-      System.out.println(getCurrentPlayer().getPlayerName() + " is the current player");
-      System.out.println("They have rolled a " + roll);
-
-      if (getCurrentPlayer().isInPenaltyBox()) {
-         if (roll % 2 != 0) {
-            getCurrentPlayer().setInPenaltyBox(false);
-            System.out.println(getCurrentPlayer().getPlayerName() + " is getting out of the penalty box");
-         } else {
-            System.out.println(getCurrentPlayer().getPlayerName() + " is not getting out of the penalty box");
-         }
-      }
-
-      if (!getCurrentPlayer().isInPenaltyBox()) {
-         int targetPosition = (getCurrentPlayer().getCurrentPosition() + roll) % gameBoard.getBoardSize();
-         getCurrentPlayer().setCurrentPosition(targetPosition);
-
-         QuestionType currentQuestionCategory = currentCategory(targetPosition);
-         System.out.println("The category is " + currentQuestionCategory);
-         gameBoard.askQuestion(currentQuestionCategory);
-      }
-
-   }
+    public void roll(int roll) {
+        Optional<QuestionType> currentQuestionCategory = gameBoard.getCurrentPlayer().rollAndGetCurentQuestionCategory(roll, gameBoard.getBoardSize());
+        currentQuestionCategory.ifPresent(questionType -> gameBoard.askQuestion(questionType));
+    }
 
 
-   private QuestionType currentCategory(int playerPosition) {
-      QuestionType[] types = QuestionType.values();
-      QuestionType category = types[playerPosition % types.length];
-      return category;
-   }
-
-   public boolean wasCorrectlyAnswered() {
-      if (getCurrentPlayer().isInPenaltyBox()) {
-            updateNextPlayer();
+    public boolean wasCorrectlyAnswered() {
+        if (gameBoard.getCurrentPlayer().isInPenaltyBox()) {
+            gameBoard.switchToNextPlayer();
             return true;
-      } else {
-         return correctAnswer( getCurrentPlayer() );
-      }
-   }
-
-   private void updateNextPlayer() {
-      players.addLast( players.pollFirst() );
-   }
-
-   private boolean correctAnswer( Player player ) {
-      System.out.println("Answer was correct!!!!");
-      player.addCoin();
-
-      boolean winner = didPlayerWin();
-      updateNextPlayer();
-      return winner;
-   }
-
-   public boolean wrongAnswer() {
-      System.out.println("Question was incorrectly answered");
-      System.out.println(getCurrentPlayer().getPlayerName() + " was sent to the penalty box");
-      getCurrentPlayer().setInPenaltyBox( true );
-
-      updateNextPlayer();
-      return true;
-   }
+        } else {
+            gameBoard.getCurrentPlayer().correctAnswer();
+            boolean winner = gameBoard.getCurrentPlayer().didPlayerWin();
+            gameBoard.switchToNextPlayer();
+            return !winner;
+        }
+    }
 
 
-   private boolean didPlayerWin() {
-      return !(getCurrentPlayer().getNumberOfCoins() == 6);
-   }
+    public boolean wrongAnswer() {
+        System.out.println("Question was incorrectly answered");
+        System.out.println(gameBoard.getCurrentPlayer().getPlayerName() + " was sent to the penalty box");
+
+        gameBoard.getCurrentPlayer().setInPenaltyBox(true);
+        gameBoard.switchToNextPlayer();
+        return true;
+    }
 }
