@@ -15,8 +15,7 @@ public class GameBetter implements Game {
     }
 
     public boolean add(String playerName) {
-        gameBoard.addPlayer(playerName);
-        return true;
+        return gameBoard.addPlayer(playerName);
     }
 
     public void roll(int roll) {

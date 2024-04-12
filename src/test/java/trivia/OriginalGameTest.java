@@ -9,6 +9,8 @@ import java.io.PrintStream;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class OriginalGameTest {
 
@@ -65,5 +67,25 @@ public class OriginalGameTest {
 		}
 
 		return new String(baos.toByteArray());
+	}
+
+	@Test
+	public void maxNumberPlayerTest(){
+		GameBetter gameBetter = new GameBetter( MAXIMUM_QUESTIONS_PER_TYPE );
+		assertTrue( gameBetter.add("player1") );
+		assertTrue( gameBetter.add("player2") );
+		assertTrue( gameBetter.add("player3") );
+		assertTrue( gameBetter.add("player4") );
+		assertTrue( gameBetter.add("player5") );
+		assertTrue( gameBetter.add("player6") );
+		assertFalse( gameBetter.add("player7") );
+		assertFalse( gameBetter.add("player8") );
+	}
+
+	@Test
+	public void duplicatePlayerNameTest(){
+		GameBetter gameBetter = new GameBetter( MAXIMUM_QUESTIONS_PER_TYPE );
+		assertTrue( gameBetter.add("player1") );
+		assertFalse( gameBetter.add("player1") );
 	}
 }

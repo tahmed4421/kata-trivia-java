@@ -15,6 +15,7 @@ public class OriginalGame implements Game {
    LinkedList scienceQuestions = new LinkedList();
    LinkedList sportsQuestions = new LinkedList();
    LinkedList rockQuestions = new LinkedList();
+   LinkedList geographyQuestions = new LinkedList();
 
    int currentPlayer = 0;
    boolean isGettingOutOfPenaltyBox;
@@ -25,6 +26,7 @@ public class OriginalGame implements Game {
          scienceQuestions.addLast(("Science Question " + i));
          sportsQuestions.addLast(("Sports Question " + i));
          rockQuestions.addLast(createRockQuestion(i));
+         geographyQuestions.addLast(("Geography Question " + i));
       }
    }
 
@@ -37,7 +39,9 @@ public class OriginalGame implements Game {
    }
 
    public boolean add(String playerName) {
-
+      if ( players.size() >= 6 ) {
+         return false;
+      }
 
       players.add(playerName);
       places[howManyPlayers()] = 0;
@@ -99,20 +103,25 @@ public class OriginalGame implements Game {
          System.out.println(sportsQuestions.removeFirst());
       if (currentCategory() == "Rock")
          System.out.println(rockQuestions.removeFirst());
+      if (currentCategory() == "Geography")
+         System.out.println(geographyQuestions.removeFirst());
    }
 
 
    private String currentCategory() {
       if (places[currentPlayer] == 0) return "Pop";
-      if (places[currentPlayer] == 4) return "Pop";
-      if (places[currentPlayer] == 8) return "Pop";
+      if (places[currentPlayer] == 5) return "Pop";
+      if (places[currentPlayer] == 10) return "Pop";
       if (places[currentPlayer] == 1) return "Science";
-      if (places[currentPlayer] == 5) return "Science";
-      if (places[currentPlayer] == 9) return "Science";
+      if (places[currentPlayer] == 6) return "Science";
+      if (places[currentPlayer] == 11) return "Science";
       if (places[currentPlayer] == 2) return "Sports";
-      if (places[currentPlayer] == 6) return "Sports";
-      if (places[currentPlayer] == 10) return "Sports";
-      return "Rock";
+      if (places[currentPlayer] == 7) return "Sports";
+      if (places[currentPlayer] == 12) return "Sports";
+      if (places[currentPlayer] == 3) return "Rock";
+      if (places[currentPlayer] == 8) return "Rock";
+      if (places[currentPlayer] == 13) return "Rock";
+      return "Geography";
    }
 
    public boolean wasCorrectlyAnswered() {

@@ -1,5 +1,6 @@
 package trivia;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class Player {
@@ -93,6 +94,17 @@ public class Player {
 
     protected boolean didPlayerWin() {
         return this.getNumberOfCoins() == NUMBER_OF_COINS_TO_WIN;
+    }
+
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {return true;}
+        if ( o == null || getClass() != o.getClass() ) {return false;}
+        Player player = (Player) o;
+        return Objects.equals( playerName, player.playerName );
+    }
+
+    @Override public int hashCode() {
+        return Objects.hashCode( playerName );
     }
 
     @Override

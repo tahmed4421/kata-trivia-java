@@ -4,7 +4,8 @@ public enum QuestionType {
     POP("Pop"),
     SCIENCE("Science"),
     SPORTS("Sports"),
-    ROCK("Rock");
+    ROCK("Rock"),
+    GEOGRAPHY("Geography");
 
     public final String label;
 
